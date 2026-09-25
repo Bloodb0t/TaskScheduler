@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<GridPane xmlns="http://javafx.com/javafx/21"
+          xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="com.taskscheduler.controller.TaskEditController"
+          hgap="12" vgap="10" prefWidth="640" prefHeight="700">
+    <padding><Insets top="20" left="24" right="24" bottom="20"/></padding>
+
+    <columnConstraints>
+        <ColumnConstraints hgrow="NEVER" prefWidth="110"/>
+        <ColumnConstraints hgrow="ALWAYS"/>
+    </columnConstraints>
+
+    <Label text="Title:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+    <TextField fx:id="fieldTitle" GridPane.columnIndex="1" GridPane.rowIndex="0" promptText="Required (max 200 chars)"/>
+
+    <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+    <TextArea fx:id="fieldDescription" GridPane.columnIndex="1" GridPane.rowIndex="1"
+              prefRowCount="4" wrapText="true" promptText="Optional multi-line text..."/>
+
+    <Label text="Priority:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+    <HBox spacing="14" GridPane.columnIndex="1" GridPane.rowIndex="2">
+        <padding><Insets top="2" bottom="2"/></padding>
+        <RadioButton fx:id="rbLow" text="Low" toggleGroup="$priorityGroup"/>
+        <RadioButton fx:id="rbMedium" text="Medium" toggleGroup="$priorityGroup" selected="true"/>
+        <RadioButton fx:id="rbHigh" text="High" toggleGroup="$priorityGroup"/>
+        <RadioButton fx:id="rbUrgent" text="Urgent" toggleGroup="$priorityGroup"/>
+    </HBox>
+    <fx:define>
+        <ToggleGroup fx:id="priorityGroup"/>
+    </fx:define>
+
+    <Label text="Status:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+    <ComboBox fx:id="fieldStatus" GridPane.columnIndex="1" GridPane.rowIndex="3" prefWidth="220"/>
+
+    <Label text="Category:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+    <ChoiceBox fx:id="fieldCategory" GridPane.columnIndex="1" GridPane.rowIndex="4" prefWidth="220"/>
+
+    <Label text="Due Date:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+    <DatePicker fx:id="fieldDueDate" GridPane.columnIndex="1" GridPane.rowIndex="5" prefWidth="220"/>
+
+    <Label text="Progress %:" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+    <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="6">
+        <Slider fx:id="fieldProgressSlider" min="0" max="100" majorTickUnit="25"
+                minorTickCount="4" showTickLabels="true" showTickMarks="true"
+                blockIncrement="5" value="0"/>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Fine-tune (Spinner):"/>
+            <Spinner fx:id="fieldProgressSpinner" min="0" max="100" initialValue="0" amountToStepBy="1"
+                     prefWidth="100" editable="true"/>
+        </HBox>
+    </VBox>
+
+    <Label text="Assigned To:" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+    <TextField fx:id="fieldAssignedTo" GridPane.columnIndex="1" GridPane.rowIndex="7" promptText="Person or team name"/>
+
+    <Label text="Tag Color:" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
+    <ColorPicker fx:id="fieldTagColor" GridPane.columnIndex="1" GridPane.rowIndex="8" prefWidth="220"/>
+
+    <Label text="Options:" GridPane.columnIndex="0" GridPane.rowIndex="9"/>
+    <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="9">
+        <CheckBox fx:id="checkSendEmail" text="Send notification email on save"/>
+        <CheckBox fx:id="checkHighVisibility" text="Highlight in dashboard"/>
+    </VBox>
+
+    <HBox GridPane.columnIndex="1" GridPane.rowIndex="10" spacing="12" alignment="BOTTOM_RIGHT">
+        <padding><Insets top="12"/></padding>
+        <Button fx:id="btnCancel" text="Cancel" onAction="#onCancel" cancelButton="true" prefWidth="90"/>
+        <Button fx:id="btnSave" text="Save" onAction="#onSave" defaultButton="true" prefWidth="90"
+                styleClass="primary-button"/>
+    </HBox>
+
+    <Label fx:id="errorLabel" text="" GridPane.columnIndex="0" GridPane.rowIndex="11"
+           GridPane.columnSpan="2" textFill="#c41e3a" wrapText="true">
+        <font><Font size="13"/></font>
+    </Label>
+</GridPane>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.taskscheduler.controller.StatsController"
+            prefWidth="800" prefHeight="620">
+    <padding><Insets top="16" left="20" bottom="16" right="20"/></padding>
+
+    <top>
+        <VBox spacing="8">
+            <HBox spacing="10" alignment="BASELINE_LEFT">
+                <Label text="Task Statistics" styleClass="section-title"
+                       style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+                <Label fx:id="summaryLabel" text="Loading..."/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="btnRefresh" text="Refresh" onAction="#onRefresh"/>
+                <Button fx:id="btnBack" text="Back" onAction="#onBack" cancelButton="true"/>
+            </HBox>
+            <Separator/>
+        </VBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.55">
+            <items>
+                <VBox spacing="12">
+                    <Label text="Overview" styleClass="section-title"
+                           style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                    <GridPane hgap="14" vgap="10">
+                        <Label text="Total Tasks:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <Label fx:id="totalValue" text="-" GridPane.columnIndex="1" GridPane.rowIndex="0"
+                               style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                        <Label text="Active Tasks:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                        <Label fx:id="activeValue" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                        <Label text="Pending:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                        <Label fx:id="pendingValue" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                        <Label text="In Progress:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                        <Label fx:id="inProgressValue" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                        <Label text="Completed:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                        <Label fx:id="completedValue" text="-" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                        <Label text="Cancelled:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+                        <Label fx:id="cancelledValue" text="-" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                        <Label text="Overdue:" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+                        <Label fx:id="overdueValue" text="-" GridPane.columnIndex="1" GridPane.rowIndex="6" textFill="#c41e3a"/>
+                        <Label text="Avg Progress:" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+                        <Label fx:id="avgProgressValue" text="-" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+                        <Label text="Completion Rate:" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
+                        <ProgressBar fx:id="completionBar" GridPane.columnIndex="1" GridPane.rowIndex="8" prefWidth="200"/>
+                    </GridPane>
+
+                    <Region VBox.vgrow="ALWAYS"/>
+                    <Label text="Tasks by Priority (ListView)" styleClass="section-title"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <ListView fx:id="priorityListView" prefHeight="160"/>
+                </VBox>
+
+                <VBox spacing="12">
+                    <Label text="Task Breakdown (TreeView)" styleClass="section-title"
+                           style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                    <TreeView fx:id="breakdownTree" VBox.vgrow="ALWAYS"/>
+                    <Label text="Recent Events (Log)" styleClass="section-title"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <TextArea fx:id="logArea" editable="false" prefRowCount="10" wrapText="true"/>
+                </VBox>
+            </items>
+        </SplitPane>
+    </center>
+</BorderPane>

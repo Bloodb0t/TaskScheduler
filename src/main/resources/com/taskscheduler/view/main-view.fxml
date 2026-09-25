@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.taskscheduler.controller.MainController"
+            prefWidth="1200" prefHeight="800">
+
+    <top>
+        <VBox>
+            <MenuBar>
+                <menus>
+                    <Menu mnemonicParsing="false" text="File">
+                        <items>
+                            <MenuItem fx:id="menuNew" mnemonicParsing="false" onAction="#onMenuNew" text="New Task" accelerator="Shortcut+N"/>
+                            <MenuItem fx:id="menuOpenSample" mnemonicParsing="false" onAction="#onMenuSeedSample" text="Seed Sample Data"/>
+                            <SeparatorMenuItem mnemonicParsing="false"/>
+                            <MenuItem fx:id="menuExit" mnemonicParsing="false" onAction="#onMenuExit" text="Exit"/>
+                        </items>
+                    </Menu>
+                    <Menu mnemonicParsing="false" text="View">
+                        <items>
+                            <MenuItem fx:id="menuStats" mnemonicParsing="false" onAction="#onMenuShowStats" text="Statistics"/>
+                            <MenuItem fx:id="menuRefresh" mnemonicParsing="false" onAction="#onRefresh" text="Refresh" accelerator="F5"/>
+                        </items>
+                    </Menu>
+                    <Menu mnemonicParsing="false" text="Action">
+                        <items>
+                            <MenuItem fx:id="menuRunPipeline" mnemonicParsing="false" onAction="#onRunPipeline" text="Run Producer-Consumer Pipeline"/>
+                            <MenuItem fx:id="menuExecuteSelected" mnemonicParsing="false" onAction="#onExecuteSelected" text="Execute Selected (Async)"/>
+                        </items>
+                    </Menu>
+                    <Menu mnemonicParsing="false" text="Help">
+                        <items>
+                            <MenuItem fx:id="menuAbout" mnemonicParsing="false" onAction="#onMenuAbout" text="About"/>
+                        </items>
+                    </Menu>
+                </menus>
+            </MenuBar>
+
+            <HBox spacing="10" styleClass="toolbar">
+                <padding><Insets top="8" left="12" bottom="8" right="12"/></padding>
+                <Label text="Search:">
+                    <font><Font size="14"/></font>
+                </Label>
+                <TextField fx:id="searchField" prefWidth="250" promptText="Filter by title / assigned..." onKeyReleased="#onSearchKey"/>
+                <Label text="Status:"/>
+                <ComboBox fx:id="statusFilter" prefWidth="150"/>
+                <Label text="Category:"/>
+                <ChoiceBox fx:id="categoryFilter" prefWidth="130"/>
+                <Label text="Priority:"/>
+                <ComboBox fx:id="priorityFilter" prefWidth="120"/>
+                <CheckBox fx:id="hideDoneCheck" text="Hide Completed" onAction="#onFilterChange"/>
+                <CheckBox fx:id="overdueOnlyCheck" text="Overdue Only" onAction="#onFilterChange"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.7">
+            <BorderPane.margin><Insets top="8" right="12" bottom="0" left="12"/></BorderPane.margin>
+            <items>
+                <TableView fx:id="taskTable">
+                    <columns>
+                        <TableColumn fx:id="colId" prefWidth="50" text="ID">
+                            <cellValueFactory><PropertyValueFactory property="id"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colTitle" prefWidth="260" text="Title">
+                            <cellValueFactory><PropertyValueFactory property="title"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colPriority" prefWidth="90" text="Priority">
+                            <cellValueFactory><PropertyValueFactory property="priority"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colStatus" prefWidth="100" text="Status">
+                            <cellValueFactory><PropertyValueFactory property="status"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colCategory" prefWidth="110" text="Category">
+                            <cellValueFactory><PropertyValueFactory property="category"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colDue" prefWidth="110" text="Due Date">
+                            <cellValueFactory><PropertyValueFactory property="dueDate"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colProgress" prefWidth="140" text="Progress">
+                            <cellValueFactory><PropertyValueFactory property="progress"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="colAssigned" prefWidth="120" text="Assigned To">
+                            <cellValueFactory><PropertyValueFactory property="assignedTo"/></cellValueFactory>
+                        </TableColumn>
+                    </columns>
+                </TableView>
+
+                <VBox spacing="10">
+                    <padding><Insets left="10" right="4"/></padding>
+                    <Label text="Task Details" styleClass="section-title"
+                           style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+                    <GridPane hgap="8" vgap="6">
+                        <Label text="Title:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <TextField fx:id="detailTitle" GridPane.columnIndex="1" GridPane.rowIndex="0"
+                                   prefColumnCount="22" editable="false"/>
+                        <Label text="Status:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                        <TextField fx:id="detailStatus" GridPane.columnIndex="1" GridPane.rowIndex="1" editable="false"/>
+                        <Label text="Priority:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                        <TextField fx:id="detailPriority" GridPane.columnIndex="1" GridPane.rowIndex="2" editable="false"/>
+                        <Label text="Category:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                        <TextField fx:id="detailCategory" GridPane.columnIndex="1" GridPane.rowIndex="3" editable="false"/>
+                        <Label text="Due:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                        <TextField fx:id="detailDue" GridPane.columnIndex="1" GridPane.rowIndex="4" editable="false"/>
+                        <Label text="Assigned:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+                        <TextField fx:id="detailAssigned" GridPane.columnIndex="1" GridPane.rowIndex="5" editable="false"/>
+                        <Label text="Progress:" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+                        <ProgressBar fx:id="detailProgressBar" GridPane.columnIndex="1" GridPane.rowIndex="6" prefWidth="260"/>
+                    </GridPane>
+
+                    <Label text="Description:"/>
+                    <TextArea fx:id="detailDescription" prefRowCount="5" editable="false" wrapText="true"/>
+
+                    <Label text="Color Tag:"/>
+                    <ColorPicker fx:id="detailColorPicker" editable="false" disable="true"/>
+
+                    <Region VBox.vgrow="ALWAYS"/>
+                    <HBox spacing="8">
+                        <Button fx:id="btnNew" text="New" onAction="#onNewTask" prefWidth="85"
+                                styleClass="primary-button"/>
+                        <Button fx:id="btnEdit" text="Edit" onAction="#onEditTask" prefWidth="85"/>
+                        <Button fx:id="btnDelete" text="Delete" onAction="#onDeleteTask" prefWidth="85"/>
+                    </HBox>
+                </VBox>
+            </items>
+        </SplitPane>
+    </center>
+
+    <bottom>
+        <VBox spacing="4">
+            <BorderPane.margin><Insets top="8" right="12" bottom="12" left="12"/></BorderPane.margin>
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Label text="Execution Pipeline: " styleClass="section-title"/>
+                <ProgressBar fx:id="pipelineProgress" prefWidth="400" progress="0"/>
+                <Label fx:id="pipelineLabel" text="Idle"/>
+            </HBox>
+            <Label fx:id="statusBar" text="Ready" styleClass="status-bar"/>
+        </VBox>
+    </bottom>
+</BorderPane>
