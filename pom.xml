@@ -11,8 +11,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.release>26</maven.compiler.release>
         <javafx.version>21.0.2</javafx.version>
         <sqlite.jdbc.version>3.45.1.0</sqlite.jdbc.version>
         <main.class>com.taskscheduler.MainApp</main.class>
@@ -46,8 +45,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.12.1</version>
                 <configuration>
-                    <source>21</source>
-                    <target>21</target>
+                    <release>26</release>
                 </configuration>
             </plugin>
             <plugin>
@@ -64,6 +62,41 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.5.0</version>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/libs</outputDirectory>
+                    <archive>
+                        <manifest>
+                            <mainClass>${main.class}</mainClass>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix></classpathPrefix>
+                            <useUniqueVersions>false</useUniqueVersions>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.8.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-runtime-dependencies</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/libs</outputDirectory>
+                            <includeScope>runtime</includeScope>
+                            <stripVersion>false</stripVersion>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.panteleyev</groupId>
                 <artifactId>jpackage-maven-plugin</artifactId>
                 <version>1.6.0</version>
@@ -71,10 +104,12 @@
                     <name>${app.name}</name>
                     <appVersion>${app.version}</appVersion>
                     <vendor>${app.vendor}</vendor>
-                    <destination>${project.build.directory}/dist</destination>
-                    <module>
-                        <mainClass>com.taskscheduler.MainApp</mainClass>
-                    </module>
+                    <input>${project.build.directory}/libs</input>
+                    <modulePaths>
+                        <modulePath>${project.build.directory}/libs</modulePath>
+                    </modulePaths>
+                    <mainJar>${project.build.finalName}.jar</mainJar>
+                    <mainClass>${main.class}</mainClass>
                     <addModules>
                         <addModule>javafx.controls</addModule>
                         <addModule>javafx.fxml</addModule>
@@ -83,24 +118,49 @@
                         <addModule>java.sql</addModule>
                         <addModule>java.net.http</addModule>
                         <addModule>java.desktop</addModule>
+                        <addModule>java.naming</addModule>
+                        <addModule>java.xml</addModule>
+                        <addModule>java.prefs</addModule>
+                        <addModule>jdk.crypto.ec</addModule>
+                        <addModule>jdk.localedata</addModule>
+                        <addModule>jdk.unsupported</addModule>
+                        <addModule>jdk.unsupported.desktop</addModule>
                     </addModules>
-                    <type>EXE</type>
-                    <winDirChooser>true</winDirChooser>
-                    <winMenu>true</winMenu>
-                    <winShortcut>true</winShortcut>
-                    <winPerUserInstall>true</winPerUserInstall>
                     <icon>${project.basedir}/src/main/resources/com/taskscheduler/3652191.ico</icon>
                     <javaOptions>
                         <javaOption>-Dfile.encoding=UTF-8</javaOption>
+                        <javaOption>-Djava.net.useSystemProxies=true</javaOption>
+                        <javaOption>--enable-native-access=javafx.graphics</javaOption>
+                        <javaOption>--enable-native-access=ALL-UNNAMED</javaOption>
                     </javaOptions>
+                    <arguments></arguments>
                 </configuration>
                 <executions>
+                    <execution>
+                        <id>package-app-image</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jpackage</goal>
+                        </goals>
+                        <configuration>
+                            <destination>${project.build.directory}/dist-portable</destination>
+                            <type>APP_IMAGE</type>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>package-exe</id>
                         <phase>package</phase>
                         <goals>
                             <goal>jpackage</goal>
                         </goals>
+                        <configuration>
+                            <destination>${project.build.directory}/dist</destination>
+                            <type>EXE</type>
+                            <winDirChooser>true</winDirChooser>
+                            <winMenu>true</winMenu>
+                            <winShortcut>true</winShortcut>
+                            <winPerUserInstall>true</winPerUserInstall>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

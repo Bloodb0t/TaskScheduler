@@ -1,0 +1,4 @@
+--patch-module
+com.taskscheduler=_
+--add-reads
+com.taskscheduler=ALL-UNNAMED
