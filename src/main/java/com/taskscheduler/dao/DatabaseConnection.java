@@ -10,7 +10,6 @@ import java.sql.Statement;
 
 public final class DatabaseConnection {
 
-    private static final String DB_DIR = "data";
     private static final String DB_FILE = "taskscheduler.db";
     private static final String DB_URL;
 
@@ -20,11 +19,39 @@ public final class DatabaseConnection {
         } catch (ClassNotFoundException e) {
             throw new DataAccessException("SQLite JDBC driver not found", e);
         }
-        File dir = new File(DB_DIR);
+        File dir = resolveDataDir();
         if (!dir.exists() && !dir.mkdirs()) {
-            System.err.println("Warning: could not create data directory: " + dir.getAbsolutePath());
+            System.err.println("Warning: could not create data directory: " + dir.getAbsolutePath()
+                    + " — falling back to local ./data");
+            File fallback = new File("data");
+            if (!fallback.exists() && !fallback.mkdirs()) {
+                System.err.println("Warning: fallback data directory also could not be created.");
+            }
+            dir = fallback;
         }
-        DB_URL = "jdbc:sqlite:" + DB_DIR + File.separator + DB_FILE;
+        DB_URL = "jdbc:sqlite:" + dir.getAbsolutePath() + File.separator + DB_FILE;
+        System.out.println("[DB] Using database: " + DB_URL);
+    }
+
+    private static File resolveDataDir() {
+        String override = System.getProperty("taskscheduler.db.dir");
+        if (override != null && !override.isBlank()) {
+            return new File(override);
+        }
+        String os = System.getProperty("os.name", "").toLowerCase(java.util.Locale.ROOT);
+        if (os.contains("win")) {
+            String appData = System.getenv("APPDATA");
+            if (appData != null && !appData.isBlank()) {
+                return new File(appData, "TaskScheduler");
+            }
+            String userProfile = System.getenv("USERPROFILE");
+            File base = userProfile != null ? new File(userProfile, "AppData/Roaming") : new File(System.getProperty("user.home"));
+            return new File(base, "TaskScheduler");
+        }
+        if (os.contains("mac")) {
+            return new File(System.getProperty("user.home"), "Library/Application Support/TaskScheduler");
+        }
+        return new File(System.getProperty("user.home"), ".taskscheduler");
     }
 
     private DatabaseConnection() {}

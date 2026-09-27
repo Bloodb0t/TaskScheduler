@@ -41,8 +41,10 @@ public class MainApp extends Application {
             mainCtrl.setStatsScene(statsScene, statsCtrl);
 
             primaryStage.setTitle("Task Scheduler — Desktop Manager");
+            primaryStage.setWidth(1160);
+            primaryStage.setHeight(620);
             primaryStage.setMinWidth(900);
-            primaryStage.setMinHeight(640);
+            primaryStage.setMinHeight(540);
             trySetAppIcon(primaryStage);
 
             primaryStage.setOnCloseRequest(event -> {

@@ -9,6 +9,7 @@ import com.taskscheduler.model.TaskCategory;
 import com.taskscheduler.model.TaskPriority;
 import com.taskscheduler.model.TaskStatistics;
 import com.taskscheduler.model.TaskStatus;
+import com.taskscheduler.util.JsonTaskLoader;
 import com.taskscheduler.util.TaskFilter;
 
 import java.time.LocalDate;
@@ -101,6 +102,47 @@ public class TaskService {
         List<Task> existing = dao.findAll();
         if (!existing.isEmpty()) return existing;
 
+        List<Task> fetched = tryFetchRemoteOrBundled();
+        if (fetched != null && !fetched.isEmpty()) {
+            return persistAll(fetched);
+        }
+        return persistAll(buildHardcodedSamples());
+    }
+
+    private List<Task> tryFetchRemoteOrBundled() {
+        String remote = System.getProperty("taskscheduler.sample.url",
+                System.getenv().getOrDefault("TASKSCHEDULER_SAMPLE_URL", "").trim());
+        if (!remote.isEmpty()) {
+            try {
+                List<Task> result = JsonTaskLoader.fetchFromUrl(remote);
+                System.out.println("[Seed] Loaded " + result.size() + " tasks from URL: " + remote);
+                return result;
+            } catch (Exception ex) {
+                System.err.println("[Seed] Failed to load remote JSON (" + remote + "): " + ex.getMessage());
+            }
+        }
+        try {
+            List<Task> result = JsonTaskLoader.loadFromClasspath("/com/taskscheduler/sample-tasks.json");
+            System.out.println("[Seed] Loaded " + result.size() + " tasks from bundled classpath JSON.");
+            return result;
+        } catch (Exception ex) {
+            System.err.println("[Seed] Bundled classpath JSON unavailable: " + ex.getMessage());
+            return null;
+        }
+    }
+
+    private List<Task> persistAll(List<Task> in) {
+        List<Task> created = new ArrayList<>(in.size());
+        for (Task t : in) {
+            try {
+                created.add(dao.insert(t));
+            } catch (TaskValidationException ignored) {
+            }
+        }
+        return created;
+    }
+
+    private List<Task> buildHardcodedSamples() {
         String[] titles = {
                 "Review Q3 report",
                 "Call client about proposal",
@@ -124,7 +166,7 @@ public class TaskService {
         TaskCategory[] categories = TaskCategory.values();
         Random rnd = new Random(42);
 
-        List<Task> created = new ArrayList<>();
+        List<Task> sample = new ArrayList<>();
         for (int i = 0; i < titles.length; i++) {
             LocalDate due = LocalDate.now().plusDays(rnd.nextInt(-2, 14));
             Task t = new Task(0,
@@ -140,11 +182,8 @@ public class TaskService {
                             rnd.nextInt(200),
                             rnd.nextInt(200),
                             rnd.nextInt(200)));
-            try {
-                created.add(dao.insert(t));
-            } catch (TaskValidationException ignored) {
-            }
+            sample.add(t);
         }
-        return created;
+        return sample;
     }
 }

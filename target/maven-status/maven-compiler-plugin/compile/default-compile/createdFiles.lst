@@ -21,14 +21,15 @@ com\taskscheduler\controller\MainController.class
 com\taskscheduler\controller\MainController$2.class
 com\taskscheduler\controller\MainController$StatusColorCell.class
 com\taskscheduler\controller\MainController$DateCell.class
-com\taskscheduler\controller\MainController$OverdueAwareTextCell.class
 com\taskscheduler\util\NumberUtils.class
 com\taskscheduler\concurrent\TaskProducer.class
 com\taskscheduler\model\Task.class
 com\taskscheduler\util\GenericPair.class
 com\taskscheduler\concurrent\BoundedTaskQueue.class
 com\taskscheduler\controller\TaskEditController$3.class
+com\taskscheduler\util\JsonTaskLoader.class
 com\taskscheduler\controller\MainController$TaskRowFactory$1.class
+module-info.class
 com\taskscheduler\controller\StatsController$2.class
 com\taskscheduler\exception\DataAccessException.class
 com\taskscheduler\dao\TaskDAO.class
@@ -38,6 +39,7 @@ com\taskscheduler\model\TaskStatistics.class
 com\taskscheduler\dao\DatabaseConnection.class
 com\taskscheduler\model\TaskStatus.class
 com\taskscheduler\controller\StatsController.class
+com\taskscheduler\controller\MainController$TaggedTextCell.class
 com\taskscheduler\controller\TaskEditController$4.class
 com\taskscheduler\controller\MainController$1.class
 com\taskscheduler\service\TaskService.class

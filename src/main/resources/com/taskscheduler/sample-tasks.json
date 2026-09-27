@@ -1,0 +1,167 @@
+[
+  {
+    "title": "Review Q3 report",
+    "description": "Read and annotate the quarterly finance report before the Monday meeting.",
+    "priority": "HIGH",
+    "status": "IN_PROGRESS",
+    "category": "WORK",
+    "dueDate": "2026-10-01",
+    "progress": 45,
+    "assignedTo": "Team Member 3",
+    "tagColor": "#e11d48"
+  },
+  {
+    "title": "Call client about proposal",
+    "description": "Follow-up call to walk through the revised proposal scope and pricing.",
+    "priority": "CRITICAL",
+    "status": "PENDING",
+    "category": "WORK",
+    "dueDate": "2026-09-29",
+    "progress": 0,
+    "assignedTo": "Team Member 1",
+    "tagColor": "#dc2626"
+  },
+  {
+    "title": "Study for Java certification",
+    "description": "Cover concurrency, streams, and module system chapters.",
+    "priority": "MEDIUM",
+    "status": "IN_PROGRESS",
+    "category": "EDUCATION",
+    "dueDate": "2026-10-15",
+    "progress": 62,
+    "assignedTo": "Team Member 2",
+    "tagColor": "#2563eb"
+  },
+  {
+    "title": "Morning run 5K",
+    "description": "Easy jog in the park, pace ~6:00/km.",
+    "priority": "LOW",
+    "status": "COMPLETED",
+    "category": "HEALTH",
+    "dueDate": "2026-09-25",
+    "progress": 100,
+    "assignedTo": "Team Member 4",
+    "tagColor": "#16a34a"
+  },
+  {
+    "title": "Pay electricity bill",
+    "description": "Settle the monthly bill before the due date to avoid penalty.",
+    "priority": "HIGH",
+    "status": "PENDING",
+    "category": "FINANCE",
+    "dueDate": "2026-09-30",
+    "progress": 10,
+    "assignedTo": "Team Member 5",
+    "tagColor": "#ca8a04"
+  },
+  {
+    "title": "Design new dashboard UI",
+    "description": "Wireframes + high-fidelity mockups for the analytics dashboard.",
+    "priority": "MEDIUM",
+    "status": "IN_PROGRESS",
+    "category": "WORK",
+    "dueDate": "2026-10-08",
+    "progress": 30,
+    "assignedTo": "Team Member 1",
+    "tagColor": "#7c3aed"
+  },
+  {
+    "title": "Refactor auth module",
+    "description": "Split monolithic auth package, extract JWT helper, add unit tests.",
+    "priority": "HIGH",
+    "status": "PENDING",
+    "category": "WORK",
+    "dueDate": "2026-10-10",
+    "progress": 15,
+    "assignedTo": "Team Member 3",
+    "tagColor": "#0891b2"
+  },
+  {
+    "title": "Write unit tests for DAO",
+    "description": "Cover CRUD + filtering + statistics queries with an in-memory DB.",
+    "priority": "MEDIUM",
+    "status": "PENDING",
+    "category": "WORK",
+    "dueDate": "2026-10-12",
+    "progress": 5,
+    "assignedTo": "Team Member 2",
+    "tagColor": "#4f46e5"
+  },
+  {
+    "title": "Team standup prep",
+    "description": "Prepare 3-slide weekly progress deck for standup.",
+    "priority": "LOW",
+    "status": "COMPLETED",
+    "category": "WORK",
+    "dueDate": "2026-09-26",
+    "progress": 100,
+    "assignedTo": "Team Member 5",
+    "tagColor": "#94a3b8"
+  },
+  {
+    "title": "Renew SSL certificates",
+    "description": "Renew certificates for api.example.com and www.example.com.",
+    "priority": "CRITICAL",
+    "status": "PENDING",
+    "category": "WORK",
+    "dueDate": "2026-10-03",
+    "progress": 0,
+    "assignedTo": "Team Member 4",
+    "tagColor": "#b91c1c"
+  },
+  {
+    "title": "Doctor appointment",
+    "description": "Annual check-up at the family clinic.",
+    "priority": "MEDIUM",
+    "status": "PENDING",
+    "category": "HEALTH",
+    "dueDate": "2026-10-05",
+    "progress": 20,
+    "assignedTo": "Team Member 1",
+    "tagColor": "#0d9488"
+  },
+  {
+    "title": "Grocery shopping",
+    "description": "Weekly stock-up — vegetables, dairy, staples.",
+    "priority": "LOW",
+    "status": "PENDING",
+    "category": "PERSONAL",
+    "dueDate": "2026-09-28",
+    "progress": 0,
+    "assignedTo": "Team Member 2",
+    "tagColor": "#65a30d"
+  },
+  {
+    "title": "Update resume",
+    "description": "Add 2026 projects, refresh skills section, export PDF.",
+    "priority": "MEDIUM",
+    "status": "CANCELLED",
+    "category": "PERSONAL",
+    "dueDate": "2026-09-20",
+    "progress": 70,
+    "assignedTo": "Team Member 3",
+    "tagColor": "#64748b"
+  },
+  {
+    "title": "Book flight tickets",
+    "description": "Round-trip flight for the quarterly offsite.",
+    "priority": "HIGH",
+    "status": "PENDING",
+    "category": "PERSONAL",
+    "dueDate": "2026-10-06",
+    "progress": 35,
+    "assignedTo": "Team Member 4",
+    "tagColor": "#db2777"
+  },
+  {
+    "title": "Plan weekend trip",
+    "description": "Decide destination, book accommodation, prepare itinerary.",
+    "priority": "LOW",
+    "status": "IN_PROGRESS",
+    "category": "PERSONAL",
+    "dueDate": "2026-10-18",
+    "progress": 40,
+    "assignedTo": "Team Member 5",
+    "tagColor": "#f97316"
+  }
+]

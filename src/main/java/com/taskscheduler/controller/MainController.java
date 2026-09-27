@@ -142,7 +142,7 @@ public class MainController implements Initializable {
         colId.setCellValueFactory(cd -> cd.getValue().idProperty());
 
         colTitle.setCellValueFactory(cd -> cd.getValue().titleProperty());
-        colTitle.setCellFactory(tc -> new OverdueAwareTextCell());
+        colTitle.setCellFactory(tc -> new TaggedTextCell());
 
         colPriority.setCellValueFactory(cd -> cd.getValue().priorityProperty());
         colPriority.setCellFactory(tc -> new PriorityColorCell());
@@ -601,22 +601,31 @@ public class MainController implements Initializable {
         }
     }
 
-    private static class OverdueAwareTextCell extends TableCell<Task, String> {
+    private static class TaggedTextCell extends TableCell<Task, String> {
         @Override
         protected void updateItem(String item, boolean empty) {
             super.updateItem(item, empty);
             if (empty || item == null) {
                 setText(null);
                 setStyle("");
+                setGraphic(null);
                 return;
             }
             setText(item);
             Task t = getTableView().getItems().get(getIndex());
+
+            StringBuilder style = new StringBuilder();
+            java.awt.Color awt = t.getTagColor() != null ? t.getTagColor() : java.awt.Color.LIGHT_GRAY;
+            style.append(String.format(
+                    "-fx-border-style: solid none none none;" +
+                            "-fx-border-width: 0 0 0 4px;" +
+                            "-fx-border-color: transparent transparent transparent #%02x%02x%02x;" +
+                            "-fx-padding: 4 6 4 10;",
+                    awt.getRed(), awt.getGreen(), awt.getBlue()));
             if (t.isOverdue()) {
-                setStyle("-fx-font-weight: bold; -fx-text-fill: #c41e3a;");
-            } else {
-                setStyle("");
+                style.append("-fx-font-weight: bold; -fx-text-fill: #c41e3a;");
             }
+            setStyle(style.toString());
         }
     }
 

@@ -16,6 +16,9 @@
         <javafx.version>21.0.2</javafx.version>
         <sqlite.jdbc.version>3.45.1.0</sqlite.jdbc.version>
         <main.class>com.taskscheduler.MainApp</main.class>
+        <app.name>Task Scheduler</app.name>
+        <app.vendor>TaskScheduler</app.vendor>
+        <app.version>1.0.0</app.version>
     </properties>
 
     <dependencies>
@@ -57,6 +60,47 @@
                         <configuration>
                             <mainClass>${main.class}</mainClass>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.panteleyev</groupId>
+                <artifactId>jpackage-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <configuration>
+                    <name>${app.name}</name>
+                    <appVersion>${app.version}</appVersion>
+                    <vendor>${app.vendor}</vendor>
+                    <destination>${project.build.directory}/dist</destination>
+                    <module>
+                        <mainClass>com.taskscheduler.MainApp</mainClass>
+                    </module>
+                    <addModules>
+                        <addModule>javafx.controls</addModule>
+                        <addModule>javafx.fxml</addModule>
+                        <addModule>javafx.graphics</addModule>
+                        <addModule>javafx.base</addModule>
+                        <addModule>java.sql</addModule>
+                        <addModule>java.net.http</addModule>
+                        <addModule>java.desktop</addModule>
+                    </addModules>
+                    <type>EXE</type>
+                    <winDirChooser>true</winDirChooser>
+                    <winMenu>true</winMenu>
+                    <winShortcut>true</winShortcut>
+                    <winPerUserInstall>true</winPerUserInstall>
+                    <icon>${project.basedir}/src/main/resources/com/taskscheduler/3652191.ico</icon>
+                    <javaOptions>
+                        <javaOption>-Dfile.encoding=UTF-8</javaOption>
+                    </javaOptions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>package-exe</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jpackage</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
