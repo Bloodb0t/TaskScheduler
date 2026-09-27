@@ -13,7 +13,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.math.BigDecimal;
@@ -42,8 +41,6 @@ public class TaskEditController implements Initializable {
     @FXML private Slider fieldProgressSlider;
     @FXML private Spinner<Integer> fieldProgressSpinner;
     @FXML private TextField fieldAssignedTo;
-    @FXML private ColorPicker fieldTagColor;
-    @FXML private CheckBox checkSendEmail;
     @FXML private CheckBox checkHighVisibility;
     @FXML private Button btnCancel;
     @FXML private Button btnSave;
@@ -57,7 +54,6 @@ public class TaskEditController implements Initializable {
         this.editing = task;
         if (task == null) {
             fieldDueDate.setValue(LocalDate.now());
-            fieldTagColor.setValue(Color.LIGHTGRAY);
             return;
         }
         fieldTitle.setText(task.getTitle());
@@ -74,8 +70,6 @@ public class TaskEditController implements Initializable {
         fieldProgressSlider.setValue(task.getProgress());
         fieldProgressSpinner.getValueFactory().setValue(task.getProgress());
         fieldAssignedTo.setText(task.getAssignedTo());
-        java.awt.Color awt = task.getTagColor() != null ? task.getTagColor() : java.awt.Color.LIGHT_GRAY;
-        fieldTagColor.setValue(Color.rgb(awt.getRed(), awt.getGreen(), awt.getBlue()));
     }
 
     public boolean isSaved() { return saved; }
@@ -132,8 +126,6 @@ public class TaskEditController implements Initializable {
             }
         });
 
-        fieldTagColor.setValue(Color.LIGHTGRAY);
-
         Runnable clearError = this::clearError;
         fieldTitle.textProperty().addListener((obs, o, n) -> clearError.run());
         fieldDueDate.valueProperty().addListener((obs, o, n) -> clearError.run());
@@ -160,9 +152,6 @@ public class TaskEditController implements Initializable {
                 savedTask = service.updateTask(t);
             }
             saved = true;
-            if (checkSendEmail.isSelected()) {
-                showInfo("Notification", "Notification email queued for \"%s\".".formatted(savedTask.getTitle()));
-            }
             if (checkHighVisibility.isSelected()) {
                 showInfo("Dashboard", "Task highlighted on dashboard.");
             }
@@ -190,15 +179,10 @@ public class TaskEditController implements Initializable {
         LocalDate due = fieldDueDate.getValue();
         int progress = fieldProgressSpinner.getValue() != null ? fieldProgressSpinner.getValue() : 0;
         String assigned = fieldAssignedTo.getText() == null ? "" : fieldAssignedTo.getText().trim();
-        Color fxColor = fieldTagColor.getValue() != null ? fieldTagColor.getValue() : Color.LIGHTGRAY;
-        int rgb = (int) Math.round(fxColor.getRed() * 255) << 16
-                | (int) Math.round(fxColor.getGreen() * 255) << 8
-                | (int) Math.round(fxColor.getBlue() * 255);
-        java.awt.Color awtColor = new java.awt.Color(rgb);
         return new Task(0, title, desc, priority,
                 status == null ? TaskStatus.PENDING : status,
                 cat == null ? TaskCategory.OTHER : cat,
-                due, progress, assigned, awtColor);
+                due, progress, assigned);
     }
 
     private TaskPriority selectedPriority() {

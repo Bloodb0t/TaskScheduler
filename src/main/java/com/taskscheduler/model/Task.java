@@ -17,18 +17,17 @@ public class Task {
     private final ObjectProperty<LocalDate> dueDate;
     private final IntegerProperty progress;
     private final StringProperty assignedTo;
-    private final ObjectProperty<java.awt.Color> tagColor;
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public Task() {
         this(0, "", "", TaskPriority.MEDIUM, TaskStatus.PENDING,
-                TaskCategory.OTHER, LocalDate.now(), 0, "", null);
+                TaskCategory.OTHER, LocalDate.now(), 0, "");
     }
 
     public Task(int id, String title, String description, TaskPriority priority,
                 TaskStatus status, TaskCategory category, LocalDate dueDate,
-                int progress, String assignedTo, java.awt.Color tagColor) {
+                int progress, String assignedTo) {
         this.id = new SimpleIntegerProperty(id);
         this.title = new SimpleStringProperty(title);
         this.description = new SimpleStringProperty(description);
@@ -38,7 +37,6 @@ public class Task {
         this.dueDate = new SimpleObjectProperty<>(dueDate);
         this.progress = new SimpleIntegerProperty(progress);
         this.assignedTo = new SimpleStringProperty(assignedTo);
-        this.tagColor = new SimpleObjectProperty<>(tagColor != null ? tagColor : java.awt.Color.LIGHT_GRAY);
     }
 
     public void validate() throws TaskValidationException {
@@ -97,10 +95,6 @@ public class Task {
     public void setAssignedTo(String assignedTo) { this.assignedTo.set(assignedTo); }
     public StringProperty assignedToProperty() { return assignedTo; }
 
-    public java.awt.Color getTagColor() { return tagColor.get(); }
-    public void setTagColor(java.awt.Color tagColor) { this.tagColor.set(tagColor); }
-    public ObjectProperty<java.awt.Color> tagColorProperty() { return tagColor; }
-
     public String formattedDueDate() {
         return dueDate.get() != null ? dueDate.get().format(DATE_FORMATTER) : "";
     }
@@ -134,7 +128,7 @@ public class Task {
     public Task copy() {
         return new Task(getId(), getTitle(), getDescription(), getPriority(),
                 getStatus(), getCategory(), getDueDate(), getProgress(),
-                getAssignedTo(), getTagColor());
+                getAssignedTo());
     }
 
     @SuppressWarnings("unused")

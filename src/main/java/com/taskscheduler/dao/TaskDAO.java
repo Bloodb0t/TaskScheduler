@@ -107,8 +107,8 @@ public class TaskDAO {
                     "A task with the same title and due date already exists.");
         }
         String sql = """
-            INSERT INTO tasks(title, description, priority, status, category, due_date, progress, assigned_to, tag_color)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO tasks(title, description, priority, status, category, due_date, progress, assigned_to)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """;
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -142,13 +142,13 @@ public class TaskDAO {
         String sql = """
             UPDATE tasks SET
                 title = ?, description = ?, priority = ?, status = ?, category = ?,
-                due_date = ?, progress = ?, assigned_to = ?, tag_color = ?
+                due_date = ?, progress = ?, assigned_to = ?
             WHERE id = ?
             """;
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             bindInsertOrUpdate(ps, task);
-            ps.setInt(10, task.getId());
+            ps.setInt(9, task.getId());
             int affected = ps.executeUpdate();
             if (affected == 0) {
                 throw new DataAccessException("Update failed, no rows affected for id=" + task.getId());
@@ -220,7 +220,6 @@ public class TaskDAO {
         ps.setString(6, task.getDueDate().toString());
         ps.setInt(7, task.getProgress());
         ps.setString(8, task.getAssignedTo());
-        ps.setInt(9, task.getTagColor() != null ? task.getTagColor().getRGB() : 0);
     }
 
     private static Task mapRow(ResultSet rs) throws SQLException {
@@ -233,9 +232,7 @@ public class TaskDAO {
         LocalDate dueDate = LocalDate.parse(rs.getString("due_date"));
         int progress = rs.getInt("progress");
         String assigned = rs.getString("assigned_to");
-        int rgb = rs.getInt("tag_color");
-        java.awt.Color color = new java.awt.Color(rgb);
         return new Task(id, title, desc == null ? "" : desc, priority, status, category,
-                dueDate, progress, assigned == null ? "" : assigned, color);
+                dueDate, progress, assigned == null ? "" : assigned);
     }
 }

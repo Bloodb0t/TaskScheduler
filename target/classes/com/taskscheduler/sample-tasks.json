@@ -8,7 +8,6 @@
     "dueDate": "2026-10-01",
     "progress": 45,
     "assignedTo": "Team Member 3",
-    "tagColor": "#e11d48"
   },
   {
     "title": "Call client about proposal",
@@ -19,7 +18,6 @@
     "dueDate": "2026-09-29",
     "progress": 0,
     "assignedTo": "Team Member 1",
-    "tagColor": "#dc2626"
   },
   {
     "title": "Study for Java certification",
@@ -30,7 +28,6 @@
     "dueDate": "2026-10-15",
     "progress": 62,
     "assignedTo": "Team Member 2",
-    "tagColor": "#2563eb"
   },
   {
     "title": "Morning run 5K",
@@ -41,7 +38,6 @@
     "dueDate": "2026-09-25",
     "progress": 100,
     "assignedTo": "Team Member 4",
-    "tagColor": "#16a34a"
   },
   {
     "title": "Pay electricity bill",
@@ -52,7 +48,6 @@
     "dueDate": "2026-09-30",
     "progress": 10,
     "assignedTo": "Team Member 5",
-    "tagColor": "#ca8a04"
   },
   {
     "title": "Design new dashboard UI",
@@ -63,7 +58,6 @@
     "dueDate": "2026-10-08",
     "progress": 30,
     "assignedTo": "Team Member 1",
-    "tagColor": "#7c3aed"
   },
   {
     "title": "Refactor auth module",
@@ -74,7 +68,6 @@
     "dueDate": "2026-10-10",
     "progress": 15,
     "assignedTo": "Team Member 3",
-    "tagColor": "#0891b2"
   },
   {
     "title": "Write unit tests for DAO",
@@ -85,7 +78,6 @@
     "dueDate": "2026-10-12",
     "progress": 5,
     "assignedTo": "Team Member 2",
-    "tagColor": "#4f46e5"
   },
   {
     "title": "Team standup prep",
@@ -96,7 +88,6 @@
     "dueDate": "2026-09-26",
     "progress": 100,
     "assignedTo": "Team Member 5",
-    "tagColor": "#94a3b8"
   },
   {
     "title": "Renew SSL certificates",
@@ -107,7 +98,6 @@
     "dueDate": "2026-10-03",
     "progress": 0,
     "assignedTo": "Team Member 4",
-    "tagColor": "#b91c1c"
   },
   {
     "title": "Doctor appointment",
@@ -118,7 +108,6 @@
     "dueDate": "2026-10-05",
     "progress": 20,
     "assignedTo": "Team Member 1",
-    "tagColor": "#0d9488"
   },
   {
     "title": "Grocery shopping",
@@ -129,7 +118,6 @@
     "dueDate": "2026-09-28",
     "progress": 0,
     "assignedTo": "Team Member 2",
-    "tagColor": "#65a30d"
   },
   {
     "title": "Update resume",
@@ -140,7 +128,6 @@
     "dueDate": "2026-09-20",
     "progress": 70,
     "assignedTo": "Team Member 3",
-    "tagColor": "#64748b"
   },
   {
     "title": "Book flight tickets",
@@ -151,7 +138,6 @@
     "dueDate": "2026-10-06",
     "progress": 35,
     "assignedTo": "Team Member 4",
-    "tagColor": "#db2777"
   },
   {
     "title": "Plan weekend trip",
@@ -162,6 +148,5 @@
     "dueDate": "2026-10-18",
     "progress": 40,
     "assignedTo": "Team Member 5",
-    "tagColor": "#f97316"
   }
 ]

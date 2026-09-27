@@ -64,17 +64,39 @@ public class TaskExecutorService {
     public void startProducerConsumerPipeline(List<Task> seedTasks,
                                               int consumerCount,
                                               TaskConsumer.TaskCompletionCallback callback) {
-        BoundedTaskQueue queue = new BoundedTaskQueue(Math.max(4, seedTasks.size() / 2 + 1));
+        int cap = Math.max(4, seedTasks.size() / 2 + 1);
+        BoundedTaskQueue queue = new BoundedTaskQueue(cap);
         TaskProducer producer = new TaskProducer("MainProducer", queue, seedTasks);
-        execute(producer);
+        Future<?> producerFuture = pool.submit(producer);
+        activeFutures.add(producerFuture);
+        List<Future<?>> consumerFutures = new ArrayList<>(consumerCount);
         for (int i = 1; i <= consumerCount; i++) {
             TaskConsumer consumer = new TaskConsumer("C-" + i, queue, callback);
-            execute(consumer);
+            Future<?> cf = pool.submit(consumer);
+            activeFutures.add(cf);
+            consumerFutures.add(cf);
         }
+        // The closer thread waits for the producer to finish (with a timeout cap),
+        // THEN closes the queue so consumers drain remaining items and exit cleanly.
+        // This eliminates the race where premature queue closure drops the last 1-2 enqueues.
         new Thread(() -> {
+            String name = Thread.currentThread().getName();
             try {
-                Thread.sleep(Math.max(500L, seedTasks.size() * 150L));
+                long safeTimeout = Math.max(1500L, seedTasks.size() * 600L);
+                try {
+                    producerFuture.get(safeTimeout, TimeUnit.MILLISECONDS);
+                } catch (TimeoutException to) {
+                    System.err.println("[QueueCloser-" + name + "] Producer timed out after "
+                            + safeTimeout + "ms; closing queue anyway.");
+                } catch (ExecutionException | InterruptedException e) {
+                    if (e instanceof InterruptedException) Thread.currentThread().interrupt();
+                    System.err.println("[QueueCloser-" + name + "] Producer ended abnormally: "
+                            + e.getCause());
+                }
+                // Give any mid-flight enqueue/unblock a small grace window.
+                Thread.sleep(50);
             } catch (InterruptedException ignored) {
+                Thread.currentThread().interrupt();
             } finally {
                 queue.close();
             }

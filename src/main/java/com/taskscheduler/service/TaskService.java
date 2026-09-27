@@ -109,18 +109,32 @@ public class TaskService {
         return persistAll(buildHardcodedSamples());
     }
 
-    private List<Task> tryFetchRemoteOrBundled() {
-        String remote = System.getProperty("taskscheduler.sample.url",
-                System.getenv().getOrDefault("TASKSCHEDULER_SAMPLE_URL", "").trim());
-        if (!remote.isEmpty()) {
-            try {
-                List<Task> result = JsonTaskLoader.fetchFromUrl(remote);
-                System.out.println("[Seed] Loaded " + result.size() + " tasks from URL: " + remote);
-                return result;
-            } catch (Exception ex) {
-                System.err.println("[Seed] Failed to load remote JSON (" + remote + "): " + ex.getMessage());
-            }
+    public int addSampleData() {
+        int beforeCount = dao.findAll().size();
+        List<Task> fetched = tryFetchRemoteOrBundled();
+        if (fetched != null && !fetched.isEmpty()) {
+            persistAll(fetched);
+        } else {
+            persistAll(buildHardcodedSamples());
         }
+        int afterCount = dao.findAll().size();
+        return afterCount - beforeCount;
+    }
+
+    private List<Task> tryFetchRemoteOrBundled() {
+        String defaultRemote = "https://raw.githubusercontent.com/Bloodb0t/TaskScheduler/main/src/main/resources/com/taskscheduler/sample-tasks.json";
+        String overrideRemote = System.getProperty("taskscheduler.sample.url",
+                System.getenv().getOrDefault("TASKSCHEDULER_SAMPLE_URL", "")).trim();
+        String remote = overrideRemote.isEmpty() ? defaultRemote : overrideRemote;
+
+        try {
+            List<Task> result = JsonTaskLoader.fetchFromUrl(remote);
+            System.out.println("[Seed] Loaded " + result.size() + " tasks from URL: " + remote);
+            return result;
+        } catch (Exception ex) {
+            System.err.println("[Seed] Failed to load remote JSON (" + remote + "): " + ex.getMessage());
+        }
+
         try {
             List<Task> result = JsonTaskLoader.loadFromClasspath("/com/taskscheduler/sample-tasks.json");
             System.out.println("[Seed] Loaded " + result.size() + " tasks from bundled classpath JSON.");
@@ -177,11 +191,7 @@ public class TaskService {
                     categories[rnd.nextInt(categories.length)],
                     due,
                     rnd.nextInt(101),
-                    "Team Member " + (rnd.nextInt(5) + 1),
-                    new java.awt.Color(
-                            rnd.nextInt(200),
-                            rnd.nextInt(200),
-                            rnd.nextInt(200)));
+                    "Team Member " + (rnd.nextInt(5) + 1));
             sample.add(t);
         }
         return sample;

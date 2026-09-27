@@ -22,7 +22,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.ProgressBarTableCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -83,7 +82,6 @@ public class MainController implements Initializable {
     @FXML private TextField detailAssigned;
     @FXML private ProgressBar detailProgressBar;
     @FXML private TextArea detailDescription;
-    @FXML private ColorPicker detailColorPicker;
 
     @FXML private Button btnNew;
     @FXML private Button btnEdit;
@@ -142,7 +140,7 @@ public class MainController implements Initializable {
         colId.setCellValueFactory(cd -> cd.getValue().idProperty());
 
         colTitle.setCellValueFactory(cd -> cd.getValue().titleProperty());
-        colTitle.setCellFactory(tc -> new TaggedTextCell());
+        colTitle.setCellFactory(tc -> new TitleTextCell());
 
         colPriority.setCellValueFactory(cd -> cd.getValue().priorityProperty());
         colPriority.setCellFactory(tc -> new PriorityColorCell());
@@ -180,8 +178,6 @@ public class MainController implements Initializable {
         detailAssigned.setText(t.getAssignedTo());
         detailProgressBar.setProgress(t.getProgress() / 100.0);
         detailDescription.setText(t.getDescription());
-        java.awt.Color awt = t.getTagColor();
-        detailColorPicker.setValue(Color.rgb(awt.getRed(), awt.getGreen(), awt.getBlue()));
     }
 
     private void clearDetails() {
@@ -193,7 +189,6 @@ public class MainController implements Initializable {
         detailAssigned.clear();
         detailProgressBar.setProgress(0);
         detailDescription.clear();
-        detailColorPicker.setValue(Color.LIGHTGRAY);
     }
 
     private EventHandler<KeyEvent> onTableKey() {
@@ -298,12 +293,10 @@ public class MainController implements Initializable {
 
     @FXML
     private void onMenuSeedSample() {
-        int before = tasks.size();
-        service.seedSampleDataIfEmpty();
+        int added = service.addSampleData();
         reloadTasks();
-        int added = tasks.size() - before;
         showAlert(Alert.AlertType.INFORMATION, "Sample Data",
-                added > 0 ? "Added " + added + " sample tasks." : "Sample data already present.");
+                added > 0 ? "Added " + added + " sample tasks." : "No new sample tasks to add (they already exist in the database).");
     }
 
     @FXML
@@ -601,31 +594,22 @@ public class MainController implements Initializable {
         }
     }
 
-    private static class TaggedTextCell extends TableCell<Task, String> {
+    private static class TitleTextCell extends TableCell<Task, String> {
         @Override
         protected void updateItem(String item, boolean empty) {
             super.updateItem(item, empty);
             if (empty || item == null) {
                 setText(null);
                 setStyle("");
-                setGraphic(null);
                 return;
             }
             setText(item);
             Task t = getTableView().getItems().get(getIndex());
-
-            StringBuilder style = new StringBuilder();
-            java.awt.Color awt = t.getTagColor() != null ? t.getTagColor() : java.awt.Color.LIGHT_GRAY;
-            style.append(String.format(
-                    "-fx-border-style: solid none none none;" +
-                            "-fx-border-width: 0 0 0 4px;" +
-                            "-fx-border-color: transparent transparent transparent #%02x%02x%02x;" +
-                            "-fx-padding: 4 6 4 10;",
-                    awt.getRed(), awt.getGreen(), awt.getBlue()));
             if (t.isOverdue()) {
-                style.append("-fx-font-weight: bold; -fx-text-fill: #c41e3a;");
+                setStyle("-fx-font-weight: bold; -fx-text-fill: #c41e3a;");
+            } else {
+                setStyle("");
             }
-            setStyle(style.toString());
         }
     }
 
@@ -636,15 +620,19 @@ public class MainController implements Initializable {
                 @Override
                 protected void updateItem(Task t, boolean empty) {
                     super.updateItem(t, empty);
-                    setStyle("");
-                    if (empty || t == null) return;
-                    if (t.isOverdue()) {
-                        setStyle("-fx-background-color: #fff1f2;");
-                    } else if (t.getStatus() == TaskStatus.COMPLETED) {
-                        setStyle("-fx-background-color: #f0fdf4;");
-                    } else if (t.getPriority() == TaskPriority.URGENT) {
-                        setStyle("-fx-background-color: #fff7ed;");
+                    if (empty || t == null) {
+                        setStyle("");
+                        return;
                     }
+                    StringBuilder style = new StringBuilder(80);
+                    if (t.isOverdue()) {
+                        style.append("-fx-background-color: #fff1f2;");
+                    } else if (t.getStatus() == TaskStatus.COMPLETED) {
+                        style.append("-fx-background-color: #f0fdf4;");
+                    } else if (t.getPriority() == TaskPriority.URGENT) {
+                        style.append("-fx-background-color: #fff7ed;");
+                    }
+                    setStyle(style.toString());
                 }
             };
         }

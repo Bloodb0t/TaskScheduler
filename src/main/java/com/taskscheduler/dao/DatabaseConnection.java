@@ -71,8 +71,7 @@ public final class DatabaseConnection {
                 category     TEXT    NOT NULL DEFAULT 'OTHER',
                 due_date     TEXT    NOT NULL,
                 progress     INTEGER NOT NULL DEFAULT 0 CHECK (progress BETWEEN 0 AND 100),
-                assigned_to  TEXT    DEFAULT '',
-                tag_color    INTEGER DEFAULT 0
+                assigned_to  TEXT    DEFAULT ''
             )
             """;
 

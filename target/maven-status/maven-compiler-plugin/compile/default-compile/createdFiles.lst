@@ -39,7 +39,7 @@ com\taskscheduler\model\TaskStatistics.class
 com\taskscheduler\dao\DatabaseConnection.class
 com\taskscheduler\model\TaskStatus.class
 com\taskscheduler\controller\StatsController.class
-com\taskscheduler\controller\MainController$TaggedTextCell.class
+com\taskscheduler\controller\MainController$TitleTextCell.class
 com\taskscheduler\controller\TaskEditController$4.class
 com\taskscheduler\controller\MainController$1.class
 com\taskscheduler\service\TaskService.class

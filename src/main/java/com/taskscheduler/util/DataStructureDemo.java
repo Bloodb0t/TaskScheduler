@@ -15,16 +15,16 @@ public final class DataStructureDemo {
     public static void demonstrateArraysVsLists() {
         Task[] taskArray = new Task[3];
         taskArray[0] = new Task(1, "A", "", TaskPriority.LOW, TaskStatus.PENDING,
-                TaskCategory.WORK, LocalDate.now(), 0, "", null);
+                TaskCategory.WORK, LocalDate.now(), 0, "");
         taskArray[1] = new Task(2, "B", "", TaskPriority.HIGH, TaskStatus.PENDING,
-                TaskCategory.PERSONAL, LocalDate.now(), 0, "", null);
+                TaskCategory.PERSONAL, LocalDate.now(), 0, "");
         taskArray[2] = new Task(3, "C", "", TaskPriority.MEDIUM, TaskStatus.PENDING,
-                TaskCategory.STUDY, LocalDate.now(), 0, "", null);
+                TaskCategory.STUDY, LocalDate.now(), 0, "");
         Arrays.sort(taskArray, Comparator.comparing(Task::getTitle));
 
         ArrayList<Task> arrayList = new ArrayList<>(List.of(taskArray));
         arrayList.add(new Task(4, "D", "", TaskPriority.URGENT, TaskStatus.IN_PROGRESS,
-                TaskCategory.HEALTH, LocalDate.now(), 50, "", null));
+                TaskCategory.HEALTH, LocalDate.now(), 50, ""));
         Task first = arrayList.get(0);
 
         Deque<Task> taskQueue = new LinkedList<>();

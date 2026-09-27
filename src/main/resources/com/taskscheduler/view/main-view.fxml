@@ -120,9 +120,6 @@
                     <Label text="Description:"/>
                     <TextArea fx:id="detailDescription" prefRowCount="5" editable="false" wrapText="true"/>
 
-                    <Label text="Color Tag:"/>
-                    <ColorPicker fx:id="detailColorPicker" editable="false" disable="true"/>
-
                     <Region VBox.vgrow="ALWAYS"/>
                     <HBox spacing="8">
                         <Button fx:id="btnNew" text="New" onAction="#onNewTask" prefWidth="85"

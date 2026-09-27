@@ -59,23 +59,19 @@
     <Label text="Assigned To:" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
     <TextField fx:id="fieldAssignedTo" GridPane.columnIndex="1" GridPane.rowIndex="7" promptText="Person or team name"/>
 
-    <Label text="Tag Color:" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
-    <ColorPicker fx:id="fieldTagColor" GridPane.columnIndex="1" GridPane.rowIndex="8" prefWidth="220"/>
-
-    <Label text="Options:" GridPane.columnIndex="0" GridPane.rowIndex="9"/>
-    <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="9">
-        <CheckBox fx:id="checkSendEmail" text="Send notification email on save"/>
+    <Label text="Options:" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
+    <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="8">
         <CheckBox fx:id="checkHighVisibility" text="Highlight in dashboard"/>
     </VBox>
 
-    <HBox GridPane.columnIndex="1" GridPane.rowIndex="10" spacing="12" alignment="BOTTOM_RIGHT">
+    <HBox GridPane.columnIndex="1" GridPane.rowIndex="9" spacing="12" alignment="BOTTOM_RIGHT">
         <padding><Insets top="12"/></padding>
         <Button fx:id="btnCancel" text="Cancel" onAction="#onCancel" cancelButton="true" prefWidth="90"/>
         <Button fx:id="btnSave" text="Save" onAction="#onSave" defaultButton="true" prefWidth="90"
                 styleClass="primary-button"/>
     </HBox>
 
-    <Label fx:id="errorLabel" text="" GridPane.columnIndex="0" GridPane.rowIndex="11"
+    <Label fx:id="errorLabel" text="" GridPane.columnIndex="0" GridPane.rowIndex="10"
            GridPane.columnSpan="2" textFill="#c41e3a" wrapText="true">
         <font><Font size="13"/></font>
     </Label>

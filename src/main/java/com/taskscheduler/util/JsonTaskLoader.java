@@ -1,6 +1,5 @@
 package com.taskscheduler.util;
 
-import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -11,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import com.taskscheduler.model.Task;
 import com.taskscheduler.model.TaskCategory;
@@ -30,13 +30,23 @@ public final class JsonTaskLoader {
                 .uri(URI.create(url))
                 .timeout(java.time.Duration.ofSeconds(12))
                 .header("Accept", "application/json, text/plain, */*")
+                .header("User-Agent", "TaskScheduler-JsonTaskLoader/1.0")
                 .GET()
                 .build();
         HttpResponse<String> resp = client.send(req, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         if (resp.statusCode() < 200 || resp.statusCode() >= 300) {
             throw new IOException("HTTP " + resp.statusCode() + " fetching " + url);
         }
-        return parse(resp.body());
+        String body = resp.body() == null ? "" : resp.body();
+        String contentType = resp.headers().firstValue("Content-Type").orElse("");
+        System.out.println("[JsonTaskLoader] Fetched " + body.length() + " bytes from " + url
+                + " (Content-Type=" + contentType + ")");
+        if (!body.isBlank()) {
+            String preview = body.replaceAll("\\s+", " ").trim();
+            if (preview.length() > 160) preview = preview.substring(0, 160) + "…";
+            System.out.println("[JsonTaskLoader] Body preview: " + preview);
+        }
+        return parse(body);
     }
 
     public static List<Task> loadFromClasspath(String resourcePath) throws IOException {
@@ -48,7 +58,7 @@ public final class JsonTaskLoader {
     }
 
     // Tiny streaming JSON array-of-object parser for the fixed schema:
-    // [ { title, description, priority, status, category, dueDate, progress, assignedTo, tagColor }, ... ]
+    // [ { title, description, priority, status, category, dueDate, progress, assignedTo }, ... ]
     // Deliberately small, no external deps; strict but forgiving about ordering and optional fields.
     public static List<Task> parse(String json) throws IOException {
         List<Task> out = new ArrayList<>();
@@ -61,7 +71,7 @@ public final class JsonTaskLoader {
             if (s[i] != '{') throw new IOException("Expected '{' at index " + i);
             i = skipWs(s, i + 1);
             String title = "", description = "", priority = "MEDIUM", status = "PENDING",
-                    category = "PERSONAL", dueDate = null, assignedTo = "", tagColor = "#bbbbbb";
+                    category = "PERSONAL", dueDate = null, assignedTo = "";
             int progress = 0;
             while (s[i] != '}') {
                 // key
@@ -84,7 +94,6 @@ public final class JsonTaskLoader {
                         case "category" -> category = v;
                         case "dueDate" -> dueDate = v;
                         case "assignedTo" -> assignedTo = v;
-                        case "tagColor" -> tagColor = v;
                     }
                 } else if (s[i] == 't' || s[i] == 'f' || s[i] == 'n') {
                     i = skipLiteral(s, i);
@@ -106,13 +115,12 @@ public final class JsonTaskLoader {
                 Task t = new Task(0,
                         title,
                         description,
-                        TaskPriority.valueOf(priority.toUpperCase()),
-                        TaskStatus.valueOf(status.toUpperCase()),
-                        TaskCategory.valueOf(category.toUpperCase()),
+                        asPriority(priority),
+                        asStatus(status),
+                        asCategory(category),
                         dueDate == null || dueDate.isEmpty() ? null : LocalDate.parse(dueDate),
                         progress,
-                        assignedTo == null ? "" : assignedTo,
-                        parseColor(tagColor));
+                        assignedTo == null ? "" : assignedTo);
                 out.add(t);
             } catch (Exception ex) {
                 throw new IOException("Invalid task object (title='" + title + "'): " + ex.getMessage(), ex);
@@ -124,26 +132,112 @@ public final class JsonTaskLoader {
         return out;
     }
 
-    private static Color parseColor(String hex) {
-        if (hex == null || hex.isEmpty()) return Color.LIGHT_GRAY;
-        String h = hex.startsWith("#") ? hex.substring(1) : hex;
-        try {
-            int val = Integer.parseInt(h, 16);
-            if (h.length() == 8) {
-                return new Color((val >> 16) & 0xFF, (val >> 8) & 0xFF, val & 0xFF);
-            }
-            if (h.length() == 6) {
-                return new Color((val >> 16) & 0xFF, (val >> 8) & 0xFF, val & 0xFF);
-            }
-            if (h.length() == 3) {
-                int r = Integer.parseInt(h.substring(0, 1).repeat(2), 16);
-                int g = Integer.parseInt(h.substring(1, 2).repeat(2), 16);
-                int b = Integer.parseInt(h.substring(2, 3).repeat(2), 16);
-                return new Color(r, g, b);
-            }
-        } catch (NumberFormatException ignored) {
+    private static TaskPriority asPriority(String v) {
+        if (v == null) return TaskPriority.MEDIUM;
+        String s = v.trim().toUpperCase(Locale.ROOT).replaceAll("[-_ ]", "");
+        // common aliases
+        switch (s) {
+            case "CRITICAL":
+            case "URGENT":
+            case "P0":
+            case "SEVERE":
+                return TaskPriority.URGENT;
+            case "HIGH":
+            case "P1":
+                return TaskPriority.HIGH;
+            case "MEDIUM":
+            case "NORMAL":
+            case "DEFAULT":
+            case "P2":
+                return TaskPriority.MEDIUM;
+            case "LOW":
+            case "MINOR":
+            case "TRIVIAL":
+            case "P3":
+                return TaskPriority.LOW;
         }
-        return Color.LIGHT_GRAY;
+        try {
+            return TaskPriority.valueOf(v.trim().toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException ex) {
+            TaskPriority t = TaskPriority.fromDisplayName(v);
+            if (t != null) return t;
+            return TaskPriority.MEDIUM;
+        }
+    }
+
+    private static TaskStatus asStatus(String v) {
+        if (v == null) return TaskStatus.PENDING;
+        String s = v.trim().toUpperCase(Locale.ROOT).replaceAll("[-_ ]", "");
+        switch (s) {
+            case "TODO":
+            case "PENDING":
+            case "OPEN":
+            case "NEW":
+                return TaskStatus.PENDING;
+            case "INPROGRESS":
+            case "PROGRESS":
+            case "ACTIVE":
+            case "RUNNING":
+            case "WORKING":
+                return TaskStatus.IN_PROGRESS;
+            case "COMPLETED":
+            case "DONE":
+            case "FINISHED":
+            case "CLOSED":
+                return TaskStatus.COMPLETED;
+            case "CANCELLED":
+            case "CANCELED":
+            case "ABORTED":
+            case "CANCEL":
+                return TaskStatus.CANCELLED;
+        }
+        try {
+            return TaskStatus.valueOf(v.trim().toUpperCase(Locale.ROOT).replace(' ', '_'));
+        } catch (IllegalArgumentException ex) {
+            TaskStatus t = TaskStatus.fromDisplayName(v);
+            if (t != null) return t;
+            return TaskStatus.PENDING;
+        }
+    }
+
+    private static TaskCategory asCategory(String v) {
+        if (v == null) return TaskCategory.OTHER;
+        String s = v.trim().toUpperCase(Locale.ROOT).replaceAll("[-_ ]", "");
+        switch (s) {
+            case "WORK":
+            case "JOB":
+            case "OFFICE":
+                return TaskCategory.WORK;
+            case "PERSONAL":
+            case "HOME":
+            case "LIFE":
+                return TaskCategory.PERSONAL;
+            case "STUDY":
+            case "EDUCATION":
+            case "LEARNING":
+            case "SCHOOL":
+            case "COLLEGE":
+            case "UNIVERSITY":
+                return TaskCategory.STUDY;
+            case "HEALTH":
+            case "FITNESS":
+            case "MEDICAL":
+            case "WELLNESS":
+            case "DOCTOR":
+                return TaskCategory.HEALTH;
+            case "FINANCE":
+            case "BILLS":
+            case "MONEY":
+            case "BANKING":
+                return TaskCategory.FINANCE;
+        }
+        try {
+            return TaskCategory.valueOf(v.trim().toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException ex) {
+            TaskCategory t = TaskCategory.fromDisplayName(v);
+            if (t != null) return t;
+            return TaskCategory.OTHER;
+        }
     }
 
     private static String readString(char[] s, int[] pos) {
